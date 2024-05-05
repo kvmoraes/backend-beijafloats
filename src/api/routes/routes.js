@@ -5,7 +5,6 @@ const routes = require("express").Router();
 routes.use("/recipe", recipeController);
 
 //todo: pegar a carteira do user que tá comprando, retirar os tokens e bot
-//todo: agrupar
 
 routes.get("/recipe/buy", (req, res) => {
   const { beerName, quantity } = req.body;

@@ -15,17 +15,8 @@ app.use(
   })
 );
 
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/test", (req, res) => {
-  const message = "hello";
-  try {
-    res.status(200).send(message);
-  } catch (error) {
-    message = error;
-    res.status(400).send();
-  }
-});
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", healthchecker);
 app.use("/api", userRouter);
