@@ -1,24 +1,34 @@
 const prisma = require("@prisma/client");
+const jwt = require("jsonwebtoken");
 const { 
     encrypt_password,
     verify_password 
 } = require('../utils/encrypt-password');
+const lumxApi = require("../services/lumx")
+
+const dotenv = require('dotenv');
+dotenv.config();
 
 const Prisma = new prisma.PrismaClient();
 
-const create_user = async (req, res) => {
+const createUser = async (req, res) => {
 	try {
 		const { 
 			name, 
 			email,
 			password 
 		} =	req.body;
-		
+
+		const wallet_data = await lumxApi.post("/wallets")
+		const {id, address} = wallet_data.data
+
 		const response = await Prisma.user.create({
 			data: {
 			  name: name,
 			  email: email,
-			  password: await encrypt_password(password)
+			  password: await encrypt_password(password),
+			  wallet_id: id,
+			  wallet_address: address
 			}
 		});
 		res.status(200).json(response);	
@@ -29,7 +39,7 @@ const create_user = async (req, res) => {
 	}
 };
 
-const login_user = async (req, res) => {
+const loginUser = async (req, res) => {
 	try {
 		const { 
 			email,
@@ -38,8 +48,6 @@ const login_user = async (req, res) => {
 		
 		const account = await authenticateUser(email, password);
 		if (!account) throw new Error('Invalid credentials');
-
-		const jwt = require("jsonwebtoken");
 
 		const userData = {
 			name: account.name,
@@ -62,7 +70,7 @@ const login_user = async (req, res) => {
 	}
 };
 
-const get_me = async (req, res) => {
+const getMe = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
@@ -77,7 +85,7 @@ const get_me = async (req, res) => {
 	}
 };
 
-const get_user = async (req, res) => {
+const getUser = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
@@ -148,4 +156,4 @@ const authenticateUser = async (email_adress, password) => {
 	return account;
 };
 
-module.exports = { create_user, get_me, get_user, login_user };
+module.exports = { createUser, getMe, getUser, loginUser };

@@ -6,26 +6,26 @@ const validator = createValidator({});
 const {
   recipeQuerySchema,
   recipeDefaultBodySchema,
-} = require("../middleware/recipe-validator");
+} = require("../middleware/recipeValidator");
 
 const router = require("express").Router();
 
 router.post(
   "/recipe",
   validator.body(recipeDefaultBodySchema),
-  recipeController.create_recipe
+  recipeController.createRecipe
 );
 
 router.get(
   "/recipe/:id",
   //validator.query(recipeQuerySchema),
-  recipeController.get_recipe
+  recipeController.getRecipe
 );
 
 router.delete(
   "/recipe/:id",
   validator.query(recipeQuerySchema),
-  recipeController.delete_recipe
+  recipeController.deleteRecipe
 );
 
 module.exports = router;

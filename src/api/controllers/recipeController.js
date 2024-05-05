@@ -3,7 +3,7 @@ const prisma = require("@prisma/client");
 
 const Prisma = new prisma.PrismaClient();
 
-const create_recipe = async (req, res) => {
+const createRecipe = async (req, res) => {
   const { name, price, description, ingredients } = req.body;
 
   try {
@@ -26,7 +26,7 @@ const create_recipe = async (req, res) => {
   }
 };
 
-const get_recipe = async (req, res) => {
+const getRecipe = async (req, res) => {
   try {
     const response = await Prisma.recipe.findUnique({
       where: {
@@ -39,7 +39,7 @@ const get_recipe = async (req, res) => {
   }
 };
 
-const delete_recipe = async (req, res) => {
+const deleteRecipe = async (req, res) => {
   try {
     const recipe = await Prisma.recipe.delete({
       where: {
@@ -52,4 +52,4 @@ const delete_recipe = async (req, res) => {
   }
 };
 
-module.exports = { create_recipe, get_recipe, delete_recipe };
+module.exports = { createRecipe, getRecipe, deleteRecipe };

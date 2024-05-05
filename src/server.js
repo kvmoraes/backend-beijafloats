@@ -10,6 +10,8 @@ require("dotenv").config();
 
 const PORT = process.env.APP_PORT || 3000;
 
+console.log(process.env.LUMX_APIKEY)
+
 const app = express();
 
 app.use(

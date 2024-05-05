@@ -1,57 +1,54 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// datasource db {
-    // provider = "sqlite"
-    // url      = "file:./dev.db"
-// }
-
 model User {
-    id Int @id @default(autoincrement())
-    email String @unique
-    password String
-    name String
-    recipes recipe[]
-    recipe_sales recipe_sale[]
-    wallet_id String @unique
-    wallet_address String @unique
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    deletedAt DateTime?
+  id             Int           @id @default(autoincrement())
+  email          String        @unique
+  password       String
+  name           String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  wallet_address String        @unique
+  wallet_id      String        @unique
+  recipes        recipe[]
+  recipe_sales   recipe_sale[]
 }
 
 model recipe {
-    id Int @id @default(autoincrement())
-    name String
-    description String
-    ingredients String
-    price Float
-    creatorId Int
-    creator User @relation(fields: [creatorId], references: [id])
-    recipe_sales recipe_sale[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    deletedAt DateTime?
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  ingredients  String
+  price        Float
+  creatorId    Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  creator      User          @relation(fields: [creatorId], references: [id])
+  recipe_sales recipe_sale[]
+
+  @@index([creatorId], map: "recipe_creatorId_fkey")
 }
 
 model recipe_sale {
-    id Int @id @default(autoincrement())
-    price Float
-    nft_address String @unique
-    recipeId Int
-    buyerId Int
-    recipe recipe @relation(fields: [recipeId], references: [id])
-    buyer User @relation(fields: [buyerId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    deletedAt DateTime?
+  id          Int       @id @default(autoincrement())
+  price       Float
+  nft_address String    @unique
+  recipeId    Int
+  buyerId     Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  buyer       User      @relation(fields: [buyerId], references: [id])
+  recipe      recipe    @relation(fields: [recipeId], references: [id])
+
+  @@index([buyerId], map: "recipe_sale_buyerId_fkey")
+  @@index([recipeId], map: "recipe_sale_recipeId_fkey")
 }
