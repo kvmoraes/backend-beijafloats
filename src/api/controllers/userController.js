@@ -78,7 +78,7 @@ const getMe = async (req, res) => {
 	}
 };
 
-const get_user = async (req, res) => {
+const getUser = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
@@ -93,7 +93,7 @@ const get_user = async (req, res) => {
 	}
 };
 
-// const update_user = async (req, res) => {
+// const updateUser = async (req, res) => {
 // 	try{
 // 		const { 
 // 			name, 
@@ -118,7 +118,7 @@ const get_user = async (req, res) => {
 // 	}
 // }
   
-// const delete_user = async (req, res) => {
+// const deleteUser = async (req, res) => {
 // 	try {
 // 		const response = await Prisma.user.delete({
 // 			where: {
@@ -149,4 +149,4 @@ const authenticateUser = async (email_adress, password) => {
 	return account;
 };
 
-module.exports = { create_user, get_me, get_user, login_user };
+module.exports = { createUser, getMe, getUser, loginUser };
