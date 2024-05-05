@@ -5,23 +5,20 @@ const Prisma = new prisma.PrismaClient();
 const recipeController = require("express").Router();
 
 recipeController.post("/", async (req, res) => {
-  console.log(JSON.stringify(req.body));
-  return;
-
   const { name, price, description, ingredients } = req.body;
 
-  console.log(JSON.stringify(req.body));
-  return;
-  res.json({ name, price, description, ingredients });
-  return;
   try {
     const recipe = await Prisma.recipe.create({
       data: {
         name: name,
         description: description,
         price: price,
-        ingredients: ingredients,
-        authorId: 1, //todo
+        ingredients: JSON.stringify(ingredients),
+        creator: {
+          connect: {
+            id: 1, //todo
+          },
+        },
       },
     });
     res.status(201).json(recipe);
