@@ -4,10 +4,6 @@ const {
     encrypt_password,
     verify_password 
 } = require('../utils/encrypt-password');
-const lumxApi = require("../services/lumx")
-
-const dotenv = require('dotenv');
-dotenv.config();
 
 const Prisma = new prisma.PrismaClient();
 
@@ -18,17 +14,12 @@ const createUser = async (req, res) => {
 			email,
 			password 
 		} =	req.body;
-
-		const wallet_data = await lumxApi.post("/wallets")
-		const {id, address} = wallet_data.data
-
+		
 		const response = await Prisma.user.create({
 			data: {
 			  name: name,
 			  email: email,
-			  password: await encrypt_password(password),
-			  wallet_id: id,
-			  wallet_address: address
+			  password: await encrypt_password(password)
 			}
 		});
 		res.status(200).json(response);	
@@ -41,6 +32,8 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
 	try {
+		const secret = process.env.SECRET;
+
 		const { 
 			email,
 			password 
@@ -54,14 +47,14 @@ const loginUser = async (req, res) => {
 			email: account.email,
 			id: account.id
 		};
-
-		const token = jwt.sign(userData, process.env.SECRET, {
-			expiresIn: 300
+		
+		const token = jwt.sign(userData, secret, {
+			expiresIn: 86400
 		});
 
 		res.status(200).json({
 			data: userData,
-			"access-token": token
+			'access_token': token
 		});
 	} catch (error) {
 		res.status(401).json({
@@ -74,7 +67,7 @@ const getMe = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
-				id: Number(req.params.id)
+				id: Number(req.user.id)
 			}
 		});
 		res.status(200).json(response);
@@ -85,7 +78,7 @@ const getMe = async (req, res) => {
 	}
 };
 
-const getUser = async (req, res) => {
+const get_user = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
@@ -156,4 +149,4 @@ const authenticateUser = async (email_adress, password) => {
 	return account;
 };
 
-module.exports = { createUser, getMe, getUser, loginUser };
+module.exports = { create_user, get_me, get_user, login_user };
