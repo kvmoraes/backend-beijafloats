@@ -3,6 +3,7 @@ const {
     encrypt_password,
     verify_password 
 } = require('../utils/encrypt-password');
+const { randomBytes } = require("crypto");
 
 const Prisma = new prisma.PrismaClient();
 
@@ -13,11 +14,12 @@ const create_user = async (req, res) => {
 			email,
 			password 
 		} =	req.body;
-		
 		const response = await Prisma.user.create({
 			data: {
 			  name: name,
 			  email: email,
+			  wallet_id: randomBytes(16).toString("hex"),
+			  wallet_address: randomBytes(16).toString("hex"),
 			  password: await encrypt_password(password)
 			}
 		});
@@ -31,6 +33,8 @@ const create_user = async (req, res) => {
 
 const login_user = async (req, res) => {
 	try {
+		const secret = process.env.SECRET;
+
 		const { 
 			email,
 			password 
@@ -46,14 +50,14 @@ const login_user = async (req, res) => {
 			email: account.email,
 			id: account.id
 		};
-
-		const token = jwt.sign(userData, process.env.SECRET, {
-			expiresIn: 300
+		
+		const token = jwt.sign(userData, secret, {
+			expiresIn: 86400
 		});
 
 		res.status(200).json({
 			data: userData,
-			"access-token": token
+			'access_token': token
 		});
 	} catch (error) {
 		res.status(401).json({
@@ -66,7 +70,7 @@ const get_me = async (req, res) => {
 	try {
 		const response = await Prisma.user.findUnique({
 			where: {
-				id: Number(req.params.id)
+				id: Number(req.user.id)
 			}
 		});
 		res.status(200).json(response);
@@ -77,20 +81,20 @@ const get_me = async (req, res) => {
 	}
 };
 
-const get_user = async (req, res) => {
-	try {
-		const response = await Prisma.user.findUnique({
-			where: {
-				id: Number(req.params.id)
-			}
-		});
-		res.status(200).json(response);
-	} catch (error) {
-		res.status(400).json({
-			message: error?.message || 'ERROR_TO_GET_USER',
-		});	
-	}
-};
+// const get_user = async (req, res) => {
+// 	try {
+// 		const response = await Prisma.user.findFirst({
+// 			where: {
+// 				id: Number(req.params.id)
+// 			}
+// 		});
+// 		res.status(200).json(response);
+// 	} catch (error) {
+// 		res.status(400).json({
+// 			message: error?.message || 'ERROR_TO_GET_USER',
+// 		});	
+// 	}
+// };
 
 // const update_user = async (req, res) => {
 // 	try{
@@ -148,4 +152,4 @@ const authenticateUser = async (email_adress, password) => {
 	return account;
 };
 
-module.exports = { create_user, get_me, get_user, login_user };
+module.exports = { create_user, get_me, login_user };

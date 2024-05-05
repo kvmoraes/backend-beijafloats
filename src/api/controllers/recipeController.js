@@ -15,7 +15,7 @@ const create_recipe = async (req, res) => {
         ingredients: JSON.stringify(ingredients),
         creator: {
           connect: {
-            id: 1, //todo
+            id: req.user.id, //todo
           },
         },
       },
@@ -39,6 +39,15 @@ const get_recipe = async (req, res) => {
   }
 };
 
+const get_recipes = async (req, res) => {
+  try {
+    const response = await Prisma.recipe.findMany();
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 const delete_recipe = async (req, res) => {
   try {
     const recipe = await Prisma.recipe.delete({
@@ -52,4 +61,4 @@ const delete_recipe = async (req, res) => {
   }
 };
 
-module.exports = { create_recipe, get_recipe, delete_recipe };
+module.exports = { create_recipe, get_recipe, get_recipes, delete_recipe };

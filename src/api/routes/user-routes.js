@@ -4,10 +4,11 @@ const userController = require("../controllers/userController")
 const validator = createValidator({});
 
 const {
-    userParamsSchema,
+    // userParamsSchema,
     userDefaultBodySchema,
     userLoginSchema,
 } = require("../middleware/user-validator");
+const userjwt = require('../middleware/userjwt');
 
 const router = require("express").Router();
 
@@ -25,14 +26,15 @@ router.post(
 
 router.get(
     "/me", 
+    userjwt,
     userController.get_me
 );
 
-router.get(
-    "/user/:id", 
-    //validator.params(userParamsSchema),
-    userController.get_user
-);
+// router.get(
+//     "/user/:id", 
+//     //validator.params(userParamsSchema),
+//     userController.get_user
+// );
 
 // router.put(
 //     "/user",
