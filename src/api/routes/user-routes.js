@@ -6,33 +6,45 @@ const validator = createValidator({});
 const {
     userParamsSchema,
     userDefaultBodySchema,
+    userLoginSchema,
 } = require("../middleware/user-validator");
 
 const router = require("express").Router();
 
 router.post(
-    "/user",
+    "/register",
     validator.body(userDefaultBodySchema),
 	userController.create_user
 );
 
+router.post(
+    "/login",
+    validator.body(userLoginSchema),
+    userController.login_user
+);
+
+router.get(
+    "/me", 
+    userController.get_me
+);
+
 router.get(
     "/user/:id", 
-    validator.params(userParamsSchema),
+    //validator.params(userParamsSchema),
     userController.get_user
 );
 
-router.put(
-    "/user",
-    validator.body(userDefaultBodySchema),
-    userController.update_user
-)
+// router.put(
+//     "/user",
+//     validator.body(userDefaultBodySchema),
+//     userController.update_user
+// )
 
 
-router.delete(
-    "/user/:id",
-    validator.params(userParamsSchema),
-    userController.delete_user
-);
+// router.delete(
+//     "/user/:id",
+//     validator.params(userParamsSchema),
+//     userController.delete_user
+// );
 
 module.exports = router;
