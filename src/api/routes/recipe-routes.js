@@ -18,7 +18,7 @@ router.post(
   recipeController.createRecipe
 );
 
-router.get("/recipe", recipeController.get_recipes);
+router.get("/recipe", recipeController.getRecipes);
 
 
 router.get(
