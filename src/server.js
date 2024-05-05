@@ -4,8 +4,11 @@ const cors = require("cors");
 const healthchecker = require("./api/routes/healthcheck");
 const routes = require("./api/routes/routes");
 
+require("dotenv").config();
+
+const PORT = process.env.APP_PORT || 3000;
+
 const app = express();
-const PORT = 3000;
 
 app.use(
   cors({
@@ -13,7 +16,6 @@ app.use(
   })
 );
 
-// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
