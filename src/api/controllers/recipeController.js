@@ -1,10 +1,9 @@
 const prisma = require("@prisma/client");
+// const { get } = require("../routes/routes");
 
 const Prisma = new prisma.PrismaClient();
 
-const recipeController = require("express").Router();
-
-recipeController.post("/", async (req, res) => {
+const create_recipe = async (req, res) => {
   const { name, price, description, ingredients } = req.body;
 
   try {
@@ -25,9 +24,9 @@ recipeController.post("/", async (req, res) => {
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
-});
+};
 
-recipeController.get("/:id", async (req, res) => {
+const get_recipe = async (req, res) => {
   try {
     const response = await Prisma.recipe.findUnique({
       where: {
@@ -38,9 +37,9 @@ recipeController.get("/:id", async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
-});
+};
 
-recipeController.delete("/:id", async (req, res) => {
+const delete_recipe = async (req, res) => {
   try {
     const recipe = await Prisma.recipe.delete({
       where: {
@@ -51,6 +50,6 @@ recipeController.delete("/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
-});
+};
 
-module.exports = recipeController;
+module.exports = { create_recipe, get_recipe, delete_recipe };
