@@ -12,8 +12,8 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/', (req, res) => {
-	const message = "hello";
+app.use('/api', (req, res) => {
+	const message = 'hello';
 	try {
 		res.status(200).send(message);
 	} catch (error) {
