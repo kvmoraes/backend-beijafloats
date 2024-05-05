@@ -6,10 +6,13 @@
     "axios": "^1.6.8",
     "@prisma/client": "^5.13.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsdoc": "^48.2.3",
     "express": "^4.19.2",
+    "express-joi-validation": "^5.0.1",
+    "joi": "^17.13.1",
     "web3": "^4.8.0"
   },
   "devDependencies": {
@@ -18,12 +21,11 @@
     "prisma": "^5.13.0"
   },
   "scripts": {
-    "start": "nodemon src/server.js", 
+    "start": "nodemon src/server.js",
     "lint:check": "eslint ./src/",
-    "lint:fix": "eslint ./src/ --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:fix": "eslint ./src/ --fix"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": ""
 }
