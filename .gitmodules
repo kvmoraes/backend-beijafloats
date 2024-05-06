@@ -1,0 +1,6 @@
+[submodule "hop-token-web"]
+	path = hop-token-web
+	url = https://github.com/devfelipenunes/hop-token-web
+[submodule "LumxHack_SmartContracts"]
+	path = LumxHack_SmartContracts
+	url = https://github.com/luidgicolimerio/LumxHack_SmartContracts
