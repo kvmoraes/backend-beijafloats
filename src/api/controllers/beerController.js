@@ -1,4 +1,5 @@
 const prisma = require("@prisma/client");
+const { randomBytes } = require("crypto");
 
 const Prisma = new prisma.PrismaClient();
 
@@ -11,8 +12,6 @@ const createBeer = async (req, res) => {
         id: Number(req.body.id),
       },
     });
-
-    console.log(typeof(parseInt(recipe_sale.id)))
 
     const beer = await Prisma.beer.create({
       data: {
@@ -36,6 +35,24 @@ const getBeer = async (req, res) => {
     const response = await Prisma.beer.findUnique({
       where: {
         id: Number(req.params.id),
+      },
+    });
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+const getUserBeers = async (req, res) => {
+  try {
+    const response = await Prisma.beer_sale.findMany({
+      where: {
+        buyer: {
+          id: req.user.id,
+        },
+      },
+      select: {
+        beer: true
       },
     });
     res.status(200).json(response);
@@ -147,6 +164,7 @@ module.exports = {
   createBeer, 
   getBeer, 
   buyBeer, 
+  getUserBeers,
   getBeers, 
   deleteBeer, 
   sendJsonERC1155Data 

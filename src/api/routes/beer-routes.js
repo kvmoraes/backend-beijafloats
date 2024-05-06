@@ -38,6 +38,13 @@ router.get(
 );
 
 router.get(
+  "/user/beers",
+  userjwt,
+  beerController.getUserBeers
+);
+
+
+router.get(
   ["/beer/erc1155/:id", "/beer/erc1155/:id.json"],
   //validator.query(beerParamsSchema),
   beerController.sendJsonERC1155Data
