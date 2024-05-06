@@ -19,6 +19,7 @@ model User {
   wallet_id      String        @unique
   recipes        recipe[]
   recipe_sales   recipe_sale[]
+  beer_sale      beer_sale[]
 }
 
 model recipe {
@@ -48,7 +49,39 @@ model recipe_sale {
   deletedAt   DateTime?
   buyer       User      @relation(fields: [buyerId], references: [id])
   recipe      recipe    @relation(fields: [recipeId], references: [id])
+  beer        beer[]
 
   @@index([buyerId], map: "recipe_sale_buyerId_fkey")
   @@index([recipeId], map: "recipe_sale_recipeId_fkey")
+}
+
+model beer {
+  id           Int         @id @default(autoincrement())
+  name         String
+  recipeSaleId Int
+  creatorId    Int
+  buyerId      Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+  recipe_sale  recipe_sale @relation(fields: [recipeSaleId], references: [id])
+  beer_sale    beer_sale[]
+
+  @@index([recipeSaleId], map: "beer_recipeSaleId_fkey")
+}
+
+model beer_sale {
+  id            Int       @id @default(autoincrement())
+  price         Float
+  token_address String    @unique
+  beerId        Int
+  buyerId       Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  buyer         User      @relation(fields: [buyerId], references: [id])
+  beer          beer      @relation(fields: [beerId], references: [id])
+
+  @@index([buyerId], map: "recipe_sale_buyerId_fkey")
+  @@index([beerId], map: "beer_sale_beerId_fkey")
 }
