@@ -5,7 +5,7 @@ const userjwt = require("../middleware/userjwt");
 const validator = createValidator({});
 
 const {
-  // recipeQuerySchema,
+  recipeParamsSchema,
   recipeDefaultBodySchema,
 } = require("../middleware/recipeValidator");
 
@@ -21,19 +21,19 @@ router.post(
 router.get(
   "/recipe/buy/:id",
   userjwt,
-  //validator.body(recipeDefaultBodySchema),
+  validator.params(recipeParamsSchema),
   recipeController.buyRecipe
 );
 
 router.get(
   "/recipe",
-  //validator.query(recipeQuerySchema),
+  validator.body(recipeDefaultBodySchema),
   recipeController.getRecipes
 );
 
 router.get(
   "/recipe/:id",
-  //validator.query(recipeQuerySchema),
+  validator.params(recipeParamsSchema),
   recipeController.getRecipe
 );
 

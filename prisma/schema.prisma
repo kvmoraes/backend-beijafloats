@@ -61,9 +61,8 @@ model recipe_sale {
 model beer {
   id           Int         @id @default(autoincrement())
   name         String
+  price        Float
   recipeSaleId Int
-  creatorId    Int
-  buyerId      Int
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   deletedAt    DateTime?
