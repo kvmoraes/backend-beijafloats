@@ -29,7 +29,7 @@ model recipe {
   description  String
   ingredients  String
   price        Float
-  image        String        @default("https://torontobrewing.ca/cdn/shop/files/hefe_300x300.png")
+  image        String        @default("https://froesmhs.com/beer.jpeg")
   royaltiesId  String        @default("")
   creatorId    Int
   createdAt    DateTime      @default(now())
