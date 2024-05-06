@@ -38,6 +38,12 @@ router.get(
 );
 
 router.get(
+  "/user/recipes",
+  userjwt,
+  recipeController.getUserRecipes
+);
+
+router.get(
   ["/recipe/erc1155/:id", "/recipe/erc1155/:id.json"],
   //validator.query(recipeQuerySchema),
   recipeController.sendJsonERC1155Data

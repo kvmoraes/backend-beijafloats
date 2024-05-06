@@ -17,7 +17,7 @@ const createRecipe = async (req, res) => {
         ingredients: JSON.stringify(ingredients),
         creator: {
           connect: {
-            id: req.user.id, //todo
+            id: req.user.id,
           },
         },
       },
@@ -41,9 +41,26 @@ const getRecipe = async (req, res) => {
   }
 };
 
+const getUserRecipes = async (req, res) => {
+  try {
+    const response = await Prisma.recipe_sale.findMany({
+      where: {
+        buyer: {
+          id: req.user.id,
+        },
+      },
+      select: {
+        recipe: true
+      },
+    });
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 const buyRecipe = async (req, res) => {
   try {
-    //todo: user nao pode comrpar mesma receita
     const recipe = await Prisma.recipe.findUnique({
       where: {
         id: Number(req.params.id),
@@ -51,10 +68,26 @@ const buyRecipe = async (req, res) => {
     });
 
     if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+      return res.status(404).json({ message: "Receita não encontrada" });
     }
 
-    //todo: deployar o contrato e disponibilizar os JSONS por aqui
+    if (recipe.creatorId == req.user.id) {
+      return res.status(400).json({ message: "Usuário não pode comprar sua propria receita" });
+    }
+
+    const recipe_sales = await Prisma.recipe_sale.findMany({
+      where: {
+        recipeId: recipe.id,
+        buyerId: req.user.id,
+      },
+    });
+
+    if (recipe_sales.length > 0) {
+      return res.status(400).json({ message: "Usuário já comprou essa receita" });
+    }
+
+    //todo: deployar o contrato por aqui
+    //https://docs.infura.io/tutorials/ethereum/deploy-a-contract-using-web3.js?q=filter
 
     await Prisma.recipe_sale.create({
       data: {
@@ -122,7 +155,7 @@ const sendJsonERC1155Data = async (req, res) => {
     });
 
     if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+      return res.status(404).json({ message: "Receita não encontrada" });
     }
 
     if (id == recipe.royaltiesId){
@@ -143,4 +176,4 @@ const sendJsonERC1155Data = async (req, res) => {
   }
 };
 
-module.exports = { createRecipe, getRecipe, buyRecipe, getRecipes, deleteRecipe, sendJsonERC1155Data };
+module.exports = { createRecipe, getRecipe, getUserRecipes, buyRecipe, getRecipes, deleteRecipe, sendJsonERC1155Data };
