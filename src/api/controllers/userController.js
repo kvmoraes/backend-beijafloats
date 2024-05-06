@@ -4,6 +4,7 @@ const {
     encrypt_password,
     verify_password 
 } = require('../utils/encrypt-password');
+const lumxApi = require("../services/lumx")
 
 const Prisma = new prisma.PrismaClient();
 
@@ -14,15 +15,29 @@ const createUser = async (req, res) => {
 			email,
 			password 
 		} =	req.body;
-		
-		const response = await Prisma.user.create({
-			data: {
-			  name: name,
-			  email: email,
-			  password: await encrypt_password(password)
-			}
-		});
-		res.status(200).json(response);	
+
+		lumxApi.post("/wallets")
+		.then(async (response) => { // Note the addition of "async" here
+            const {id, address} = response.data;
+
+            // Await the encryption of the password
+            const encryptedPassword = await encrypt_password(password);
+
+            await Prisma.user.create({
+                data: {
+                    name: name,
+                    email: email,
+                    wallet_id: id,
+                    wallet_address: address,
+                    password: encryptedPassword // Use the encrypted password
+                }
+            });
+
+            res.status(201).json({ "message": "User created successfully" });
+        })
+        .catch((error) => {
+            throw new Error(error?.message || 'ERROR_TO_CREATE_USER');
+        });
 	} catch (error) {
 		res.status(400).json({
 			message: error?.message || 'ERROR_TO_CREATE_USER',

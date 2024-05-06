@@ -12,6 +12,7 @@ model User {
   email          String        @unique
   password       String
   name           String
+  image          String        @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   deletedAt      DateTime?
@@ -27,6 +28,8 @@ model recipe {
   description  String
   ingredients  String
   price        Float
+  image        String        @default("https://torontobrewing.ca/cdn/shop/files/hefe_300x300.png")
+  royaltiesId  String        @default("")
   creatorId    Int
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
